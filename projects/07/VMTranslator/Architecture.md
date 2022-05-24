@@ -130,10 +130,10 @@
   - M=D
 - **neg**
   - @SP
+  - M=M-1
+  - @SP
   - A=M
   - D=M
-  - @SP
-  - M=M-1
   - D=-D
   - @SP
   - A=M
@@ -146,11 +146,19 @@
   - (false)
     - D=0
   - @SP
+  - M=M-1
+  - @SP
   - A=M
   - D=M
   - @true
   - D; JEQ
-  - @false; JNE
+  - @false
+  - D; JNE
+  - @SP
+  - A=M
+  - M=D
+  - @SP
+  - M=M+1
 - **gt**
   - (true)
     - D=1
