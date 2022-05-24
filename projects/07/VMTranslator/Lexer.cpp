@@ -3,8 +3,3 @@
  */
 
 #include <Lexer.h>
-
-class Lexer {
-public:
-
-};
