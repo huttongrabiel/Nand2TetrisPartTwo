@@ -3,3 +3,12 @@
  */
 
 #pragma once
+
+#include <vector>
+#include <string>
+#include <iostream>
+
+class Lexer {
+public:
+    static std::vector<std::string> lex(std::string);
+};
