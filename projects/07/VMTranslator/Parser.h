@@ -12,8 +12,6 @@
 class Parser {
 public:
     enum class CommandType {
-        MemoryAccess,
-        Arithmetic,
         Push,
         Pop,
         Add,
@@ -29,8 +27,7 @@ public:
         Local,
         Static,
         This,
-        That,
-        Offset
+        That
     };
 
     static std::vector<CommandType> parse(std::vector<std::string> const&);

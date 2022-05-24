@@ -32,23 +32,16 @@ std::vector<Parser::CommandType> Parser::parse(std::vector<std::string> const& t
 
     // token can equal push, pop, add, sub, neg, eq, gt, lt, and, or, not, constant, local, static, this, that, offset
 
-    if (tokens.size() == 1)
-        parsed_instruction.push_back(CommandType::Arithmetic);
-    else
-        parsed_instruction.push_back(CommandType::MemoryAccess);
-
-    if (parsed_instruction[0] == CommandType::Arithmetic) {
+    if (tokens.size() == 1) {
         auto command = Parser::command_enum_map.find(tokens[0]);
         parsed_instruction.push_back(command->second);
     }
-    else if (parsed_instruction[0] == CommandType::MemoryAccess) {
+    else {
         auto push_or_pop = Parser::command_enum_map.find(tokens[0]);
         parsed_instruction.push_back(push_or_pop->second);
 
         auto memory_segment = Parser::command_enum_map.find(tokens[1]);
         parsed_instruction.push_back(memory_segment->second);
-        
-        parsed_instruction.push_back(CommandType::Offset);
     }
 
     return parsed_instruction;
