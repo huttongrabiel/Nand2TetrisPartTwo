@@ -4,7 +4,7 @@
 
 #include <Codegen.h>
 
-std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& parsed_instruction, std::vector<std::string> const& tokens, std::string const& instruction, std::string const& output_file_name)
+std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& parsed_instruction, std::vector<std::string> const& tokens, std::string const& instruction, std::string const& source_code_file_name)
 {
     std::string output;
 
@@ -221,7 +221,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
                 if (*(parsed_instruction_iterator+1) == Parser::CommandType::Local) 
                         output.append("@LCL\n");
                 else if (*(parsed_instruction_iterator+1) == Parser::CommandType::Static)
-                        output.append("@FIXME.static\n");
+                        output.append("@" + source_code_file_name.substr(0, source_code_file_name.length()-3) + "." + tokens[tokens.size()-1] + "\n");
                 else if (*(parsed_instruction_iterator+1) == Parser::CommandType::This)
                         output.append("@THIS\n");
                 else if (*(parsed_instruction_iterator+1) == Parser::CommandType::That)
