@@ -213,6 +213,29 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         case Parser::CommandType::This:
         case Parser::CommandType::That:
         case Parser::CommandType::Push:
+            if (*(parsed_instruction_iterator+1) == Parser::CommandType::Constant) {
+                output.append("@" + tokens[tokens.size()-1] + "\n");
+                output.append("D=A\n");
+            }
+            else {
+                if (*(parsed_instruction_iterator+1) == Parser::CommandType::Local) 
+                        output.append("@LCL\n");
+                else if (*(parsed_instruction_iterator+1) == Parser::CommandType::Static)
+                        output.append("@FIXME.static\n");
+                else if (*(parsed_instruction_iterator+1) == Parser::CommandType::This)
+                        output.append("@THIS\n");
+                else if (*(parsed_instruction_iterator+1) == Parser::CommandType::That)
+                        output.append("@THAT\n");
+
+                output.append("A=M\n");
+                output.append("D=M\n");
+            }
+            output.append("@SP\n");
+            output.append("A=M\n");
+            output.append("M=D\n");
+            output.append("@SP\n");
+            output.append("M=M+1\n");
+            break;
         case Parser::CommandType::Pop:
         case Parser::CommandType::Constant:
         default:
