@@ -208,10 +208,6 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
             output.append("@SP\n");
             output.append("M=M+1\n");
             break;
-        case Parser::CommandType::Local:
-        case Parser::CommandType::Static:
-        case Parser::CommandType::This:
-        case Parser::CommandType::That:
         case Parser::CommandType::Push:
             if (*(parsed_instruction_iterator+1) == Parser::CommandType::Constant) {
                 output.append("@" + tokens[tokens.size()-1] + "\n");
