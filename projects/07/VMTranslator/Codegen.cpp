@@ -218,15 +218,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
                 output.append("D=A\n");
             }
             else {
-                if (*(parsed_instruction_iterator+1) == Parser::CommandType::Local) 
-                        output.append("@LCL\n");
-                else if (*(parsed_instruction_iterator+1) == Parser::CommandType::Static)
-                        output.append("@" + source_code_file_name.substr(0, source_code_file_name.length()-3) + "." + tokens[tokens.size()-1] + "\n");
-                else if (*(parsed_instruction_iterator+1) == Parser::CommandType::This)
-                        output.append("@THIS\n");
-                else if (*(parsed_instruction_iterator+1) == Parser::CommandType::That)
-                        output.append("@THAT\n");
-
+                output.append(label_name(*(parsed_instruction_iterator+1), source_code_file_name, tokens));
                 output.append("A=M\n");
                 output.append("D=M\n");
             }
@@ -237,12 +229,49 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
             output.append("M=M+1\n");
             break;
         case Parser::CommandType::Pop:
+            output.append("@" + tokens[tokens.size()-1] + "\n");
+            output.append("D=A\n");
+            output.append(label_name(*(parsed_instruction_iterator+1), source_code_file_name, tokens));
+            output.append("M=M+D\n");
+            output.append("@SP\n");
+            output.append("A=M\n");
+            output.append("D=M\n");
+            output.append(label_name(*(parsed_instruction_iterator+1), source_code_file_name, tokens));
+            output.append("A=M\n");
+            output.append("M=D\n");
+            break;
         case Parser::CommandType::Constant:
+        case Parser::CommandType::Local:
+        case Parser::CommandType::Static:
+        case Parser::CommandType::This:
+        case Parser::CommandType::That:
+        case Parser::CommandType::Argument:
+        case Parser::CommandType::Temp:
         default:
-            std::cout << "Instruction not found" << std::endl;
+            break;
         }
         parsed_instruction_iterator++;
     }
 
     return output; 
+}
+
+std::string Codegen::label_name(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::vector<std::string> const& tokens)
+{
+    std::string output;
+
+    if (command_type == Parser::CommandType::Local) 
+        output.append("@LCL\n");
+    else if (command_type == Parser::CommandType::Static)
+        output.append("@" + source_code_file_name.substr(0, source_code_file_name.length()-3) + "." + tokens[2] + "\n");
+    else if (command_type == Parser::CommandType::This)
+        output.append("@THIS\n");
+    else if (command_type == Parser::CommandType::That)
+        output.append("@THAT\n");
+    else if (command_type == Parser::CommandType::Argument)
+        output.append("@ARG\n");
+    else if (command_type == Parser::CommandType::Temp)
+        output.append("@" + std::to_string(Codegen::to_int(tokens[2]) + 5) + "\n");
+
+    return output;
 }

@@ -12,4 +12,6 @@
 class Codegen {
 public:
     static std::string generate_hack_asm(std::vector<Parser::CommandType> const&, std::vector<std::string> const&, std::string const&, std::string const&);
+private:
+    static std::string label_name(Parser::CommandType const&, std::string const&, std::vector<std::string> const&);
 };
