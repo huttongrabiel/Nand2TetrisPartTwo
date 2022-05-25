@@ -11,12 +11,27 @@
 void output_hack_asm(char const* file_name) {
     // Open file for writing, translate file, close file 
 
-    std::fstream output_file(file_name);
-    if (!output_file.is_open()) {
+    std::ifstream input_source_code(file_name);
+    if (!input_source_code.is_open()) {
         std::cerr << "\033[01;31mError: \033[0mFile '" << file_name << "' not found!" << std::endl;
         exit(1);
     }
 
+    std::string out_file_name = static_cast<std::string>(file_name).substr(0, static_cast<std::string>(file_name).length()-3) + ".asm";
+    std::ofstream output_file(out_file_name);
+
+    std::string instruction;
+    while (getline(input_source_code, instruction)) {
+        std::vector<std::string> tokens = Lexer::lex(instruction);
+    
+        std::vector<Parser::CommandType> parsed_instruction = Parser::parse(tokens);
+
+        std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, static_cast<std::string>(file_name));
+
+        output_file << output;
+    }
+
+    input_source_code.close();
     output_file.close();
 }
 
