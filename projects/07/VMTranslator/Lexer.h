@@ -11,4 +11,6 @@
 class Lexer {
 public:
     static std::vector<std::string> lex(std::string);
+private:
+    static bool is_new_line(char); 
 };
