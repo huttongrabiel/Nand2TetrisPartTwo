@@ -23,6 +23,27 @@ std::vector<std::string> Lexer::lex(std::string line)
     return tokens;
 }
 
+bool Lexer::is_lexable_line(std::string line)
+{
+    bool flag = true;
+    size_t blank_char_count = 0;
+
+    if (line.substr(0,2) == "//")
+        return false;
+
+    for (auto ch : line) {
+        if (is_new_line(ch) && ch == line[0])
+            flag = false;
+        if (ch == ' ')
+            blank_char_count++;
+    }
+
+    if (blank_char_count == line.length())
+        flag = false;
+
+    return flag;
+}
+
 bool Lexer::is_new_line(char ch)
 {
     if (ch == 0x0d || ch == 0x0a || ch == 0x0d0a || ch == '\n')

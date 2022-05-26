@@ -23,6 +23,9 @@ void output_hack_asm(char const* file_name) {
     std::string instruction;
     while (getline(input_source_code, instruction)) {
         std::vector<std::string> tokens = Lexer::lex(instruction);
+
+        if (!Lexer::is_lexable_line(instruction))
+            continue;
     
         std::vector<Parser::CommandType> parsed_instruction = Parser::parse(tokens);
 
