@@ -34,6 +34,13 @@ void output_hack_asm(char const* file_name) {
         output_file << output;
     }
 
+    std::string infinite_termination;
+    infinite_termination.append("(end)\n");
+    infinite_termination.append("@end\n");
+    infinite_termination.append("0; JMP\n");
+
+    output_file << infinite_termination;
+
     input_source_code.close();
     output_file.close();
 }
