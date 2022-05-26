@@ -33,7 +33,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
             output.append("A=M\n");
             output.append("M=D\n");
             output.append("@SP\n");
-            output.append("M=M=1\n");
+            output.append("M=M+1\n");
             break;
         case Parser::CommandType::Subtract:
             output.append("@SP\n");
@@ -54,7 +54,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
             output.append("A=M\n");
             output.append("M=D\n");
             output.append("@SP\n");
-            output.append("M=M=1\n");
+            output.append("M=M+1\n");
             break;
         case Parser::CommandType::Negative:
             output.append("@SP\n");
