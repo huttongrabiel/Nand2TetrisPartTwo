@@ -12,7 +12,21 @@
 class Codegen {
 public:
     static std::string generate_hack_asm(std::vector<Parser::CommandType> const&, std::vector<std::string> const&, std::string const&, std::string const&);
+    static int m_continue_counter;
 private:
+    enum class Arithmetic {
+        Add,
+        Subtract
+    };
+
+    enum class ComparisonOperator {
+        LessThan,
+        GreaterThan,
+        EqualTo
+    };
+
+    static std::string artithmetic_asm_gen(Arithmetic);
+    static std::string comparison_operator_asm_gen(ComparisonOperator);
     static std::string label_name(Parser::CommandType const&, std::string const&, std::vector<std::string> const&);
     static int to_int(std::string str) 
     {
@@ -23,5 +37,5 @@ private:
             mult *= 10;
         }
         return res;
-    } 
+    }
 };
