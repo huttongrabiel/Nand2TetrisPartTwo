@@ -21,7 +21,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
     case Parser::CommandType::Subtract:
         output.append(artithmetic_asm_gen(Arithmetic::Subtract));
         break;
-    case Parser::CommandType::Negative:
+    case Parser::CommandType::Negate:
         output.append(artithmetic_asm_gen(Arithmetic::Negate));
         break;
     case Parser::CommandType::Equals:

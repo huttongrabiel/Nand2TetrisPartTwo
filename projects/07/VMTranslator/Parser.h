@@ -16,7 +16,7 @@ public:
         Pop,
         Add,
         Subtract,
-        Negative,
+        Negate,
         Equals,
         GreaterThan,
         LessThan,

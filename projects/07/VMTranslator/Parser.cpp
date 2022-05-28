@@ -10,7 +10,7 @@
 std::map<std::string, Parser::CommandType> Parser::command_enum_map  = {
             {"add",      Parser::CommandType::Add},
             {"sub",      Parser::CommandType::Subtract},
-            {"neg",      Parser::CommandType::Negative},
+            {"neg",      Parser::CommandType::Negate},
             {"eq",       Parser::CommandType::Equals},
             {"gt",       Parser::CommandType::GreaterThan},
             {"lt",       Parser::CommandType::LessThan},
