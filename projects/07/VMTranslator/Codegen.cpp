@@ -191,21 +191,20 @@ std::string Codegen::comparison_operator_asm_gen(ComparisonOperator comparison_o
     std::string output;
 
     output.append("@SP\n");
+    output.append("M=M-1\n");
+    output.append("@SP\n");
     output.append("A=M\n");
     output.append("D=M\n");
     output.append("@R13\n");
     output.append("M=D\n");
     output.append("@SP\n");
-    output.append("A=M\n");
     output.append("M=M-1\n");
     output.append("@SP\n");
     output.append("A=M\n");
     output.append("D=M\n");
-    output.append("@SP\n");
-    output.append("M=M-1\n");
     output.append("@R13\n");
     output.append("D=D-M\n");
-    output.append("@true\n");
+    output.append("@true" + std::to_string(m_continue_counter) + "\n");
 
     switch (comparison_operator) {
     case ComparisonOperator::EqualTo:
@@ -222,8 +221,8 @@ std::string Codegen::comparison_operator_asm_gen(ComparisonOperator comparison_o
     output.append("D=0\n");
     output.append("@continue" + std::to_string(m_continue_counter) + "\n");
     output.append("0; JMP\n");
-    output.append("(true)\n");
-    output.append("    D=1\n");
+    output.append("(true" + std::to_string(m_continue_counter) + ")\n");
+    output.append("    D=-1\n");
     output.append("(continue" + std::to_string(m_continue_counter) + ")\n");
     output.append("@SP\n");
     output.append("A=M\n");
