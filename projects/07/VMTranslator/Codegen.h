@@ -28,6 +28,8 @@ private:
     static std::string artithmetic_asm_gen(Arithmetic);
     static std::string comparison_operator_asm_gen(ComparisonOperator);
     static std::string label_name(Parser::CommandType const&, std::string const&, std::vector<std::string> const&);
+    static std::string parse_file_name(std::string const&);
+
     static int to_int(std::string str) 
     {
         int res = 0;

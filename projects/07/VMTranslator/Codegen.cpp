@@ -242,7 +242,7 @@ std::string Codegen::label_name(Parser::CommandType const& command_type, std::st
     if (command_type == Parser::CommandType::Local) 
         output.append("@LCL\n");
     else if (command_type == Parser::CommandType::Static)
-        output.append("@" + source_code_file_name.substr(0, source_code_file_name.length()-3) + "." + tokens[2] + "\n");
+        output.append("@" + parse_file_name(source_code_file_name) + "." + tokens[2] + "\n");
     else if (command_type == Parser::CommandType::This) 
         output.append("@THIS\n");
     else if (command_type == Parser::CommandType::That)
@@ -253,4 +253,17 @@ std::string Codegen::label_name(Parser::CommandType const& command_type, std::st
         output.append("@5\n");
 
     return output;
+}
+
+std::string Codegen::parse_file_name(std::string const& file_name)
+{
+    int start_index = 0;
+
+    for (int i = file_name.length()-1; i >= 0; i--) {
+        if (file_name[i] == '/') 
+            break;
+        start_index = i;
+    }
+
+    return file_name.substr(start_index, file_name.length()-start_index-3);
 }
