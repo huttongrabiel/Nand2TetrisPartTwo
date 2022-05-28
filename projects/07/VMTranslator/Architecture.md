@@ -79,8 +79,9 @@
   - @SP
   - M=M+1
 - **pop segment i**
-  - @i
-  - D=A
+  - @segment
+  - A=M
+  - D=M
   - @segment
   - M=M+D
   - @SP
@@ -90,7 +91,25 @@
   - D=M
   - @segment
   - A=M
-  - M=D 
+  - M=D
+
+pop this 7
+
+@i
+D=A
+@segment
+M=M+D
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@segment
+M=D
+@i
+D=A
+@segment
+M=M-D
 
 ***
 
@@ -274,3 +293,19 @@
   - @SP
   - M=M+1
 
+pop local 4
+
+@4
+D=A
+@LCL
+D=D+A
+@R13
+M=D
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
