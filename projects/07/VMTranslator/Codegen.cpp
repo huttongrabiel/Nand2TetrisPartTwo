@@ -44,59 +44,13 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append(comparison_operator_asm_gen(ComparisonOperator::LessThan)); 
         break;
     case Parser::CommandType::And:
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
-        output.append("@R13\n");
-        output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
-        output.append("@R13\n");
-        output.append("D=M&D\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M+1\n");
+        output.append(bitwise_operator_asm_gen(BitwiseOperator::And));
         break;
     case Parser::CommandType::Or:
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
-        output.append("@R13\n");
-        output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
-        output.append("@R13\n");
-        output.append("D=M|D\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M+1\n");
+        output.append(bitwise_operator_asm_gen(BitwiseOperator::Or));
         break;
     case Parser::CommandType::Not:
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
-        output.append("D=!D\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M+1\n");
+        output.append(bitwise_operator_asm_gen(BitwiseOperator::Not));
         break;
     case Parser::CommandType::Push:
         output.append("@" + tokens[2] + "\n");
@@ -237,6 +191,48 @@ std::string Codegen::comparison_operator_asm_gen(ComparisonOperator comparison_o
     output.append("(true" + std::to_string(m_continue_counter) + ")\n");
     output.append("    D=-1\n");
     output.append("(continue" + std::to_string(m_continue_counter) + ")\n");
+    output.append("@SP\n");
+    output.append("A=M\n");
+    output.append("M=D\n");
+    output.append("@SP\n");
+    output.append("M=M+1\n");
+
+    return output;
+}
+
+std::string Codegen::bitwise_operator_asm_gen(BitwiseOperator BitwiseOperator)
+{
+    std::string output;
+
+    output.append("@SP\n");
+    output.append("M=M-1\n");
+    output.append("@SP\n");
+    output.append("A=M\n");
+    output.append("D=M\n");
+
+    if (BitwiseOperator != BitwiseOperator::Not) {
+        output.append("@R13\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@R13\n");
+    }
+
+    switch (BitwiseOperator) {
+    case BitwiseOperator::And:
+        output.append("D=M&D\n");
+        break;
+    case BitwiseOperator::Or:
+        output.append("D=M|D\n");
+        break;
+    case BitwiseOperator::Not:
+        output.append("D=!D\n");
+        break;
+    }
+
     output.append("@SP\n");
     output.append("A=M\n");
     output.append("M=D\n");
