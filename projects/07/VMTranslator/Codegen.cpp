@@ -22,17 +22,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append(artithmetic_asm_gen(Arithmetic::Subtract));
         break;
     case Parser::CommandType::Negative:
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
-        output.append("D=-D\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M+1\n");
+        output.append(artithmetic_asm_gen(Arithmetic::Negate));
         break;
     case Parser::CommandType::Equals:
         output.append(comparison_operator_asm_gen(ComparisonOperator::EqualTo)); 
@@ -126,14 +116,17 @@ std::string Codegen::artithmetic_asm_gen(Arithmetic arithmetic)
     output.append("@SP\n");
     output.append("A=M\n");
     output.append("D=M\n");
-    output.append("@R13\n");
-    output.append("M=D\n");
-    output.append("@SP\n");
-    output.append("M=M-1\n");
-    output.append("@SP\n");
-    output.append("A=M\n");
-    output.append("D=M\n");
-    output.append("@R13\n");
+
+    if (arithmetic != Arithmetic::Negate) {
+        output.append("@R13\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@R13\n");
+    }
 
     switch (arithmetic) {
     case Arithmetic::Add:
@@ -141,6 +134,9 @@ std::string Codegen::artithmetic_asm_gen(Arithmetic arithmetic)
         break;
     case Arithmetic::Subtract:
         output.append("D=D-M\n");
+        break;
+    case Arithmetic::Negate:
+        output.append("D=-D\n");
         break;
     }
 

@@ -16,7 +16,8 @@ public:
 private:
     enum class Arithmetic {
         Add,
-        Subtract
+        Subtract,
+        Negate
     };
 
     enum class ComparisonOperator {
