@@ -14,144 +14,139 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
 
     m_continue_counter++;
 
-    // :| yikes, or just make fun of nand2tetris for their space occupying assembly language
-    auto parsed_instruction_iterator = parsed_instruction.begin();
-    while (parsed_instruction_iterator != parsed_instruction.end()) {
-        switch(*parsed_instruction_iterator) {
-        case Parser::CommandType::Add:
-            output.append(artithmetic_asm_gen(Arithmetic::Add));
-            break;
-        case Parser::CommandType::Subtract:
-            output.append(artithmetic_asm_gen(Arithmetic::Subtract));
-            break;
-        case Parser::CommandType::Negative:
-            output.append("@SP\n");
-            output.append("M=M-1\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("D=M\n");
-            output.append("D=-D\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M+1\n");
-            break;
-        case Parser::CommandType::Equals:
-            output.append(comparison_operator_asm_gen(ComparisonOperator::EqualTo)); 
-            break;
-        case Parser::CommandType::GreaterThan:
-            output.append(comparison_operator_asm_gen(ComparisonOperator::GreaterThan)); 
-            break;
-        case Parser::CommandType::LessThan:
-            output.append(comparison_operator_asm_gen(ComparisonOperator::LessThan)); 
-            break;
-        case Parser::CommandType::And:
-            output.append("@SP\n");
-            output.append("M=M-1\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("D=M\n");
-            output.append("@R13\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M-1\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("D=M\n");
-            output.append("@R13\n");
-            output.append("D=M&D\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M+1\n");
-            break;
-        case Parser::CommandType::Or:
-            output.append("@SP\n");
-            output.append("M=M-1\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("D=M\n");
-            output.append("@R13\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M-1\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("D=M\n");
-            output.append("@R13\n");
-            output.append("D=M|D\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M+1\n");
-            break;
-        case Parser::CommandType::Not:
-            output.append("@SP\n");
-            output.append("M=M-1\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("D=M\n");
-            output.append("D=!D\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M+1\n");
-            break;
-        case Parser::CommandType::Push:
-            output.append("@" + tokens[2] + "\n");
-            output.append("D=A\n");
+    switch(parsed_instruction[0]) {
+    case Parser::CommandType::Add:
+        output.append(artithmetic_asm_gen(Arithmetic::Add));
+        break;
+    case Parser::CommandType::Subtract:
+        output.append(artithmetic_asm_gen(Arithmetic::Subtract));
+        break;
+    case Parser::CommandType::Negative:
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("D=-D\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M+1\n");
+        break;
+    case Parser::CommandType::Equals:
+        output.append(comparison_operator_asm_gen(ComparisonOperator::EqualTo)); 
+        break;
+    case Parser::CommandType::GreaterThan:
+        output.append(comparison_operator_asm_gen(ComparisonOperator::GreaterThan)); 
+        break;
+    case Parser::CommandType::LessThan:
+        output.append(comparison_operator_asm_gen(ComparisonOperator::LessThan)); 
+        break;
+    case Parser::CommandType::And:
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@R13\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@R13\n");
+        output.append("D=M&D\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M+1\n");
+        break;
+    case Parser::CommandType::Or:
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@R13\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@R13\n");
+        output.append("D=M|D\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M+1\n");
+        break;
+    case Parser::CommandType::Not:
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("D=!D\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M+1\n");
+        break;
+    case Parser::CommandType::Push:
+        output.append("@" + tokens[2] + "\n");
+        output.append("D=A\n");
 
-            if (*(parsed_instruction_iterator+1) != Parser::CommandType::Constant && *(parsed_instruction_iterator+1) != Parser::CommandType::Temp) {
-                output.append(label_name(*(parsed_instruction_iterator+1), source_code_file_name, tokens));
-                output.append("A=M+D\n");
-                output.append("D=M\n");
-            }
-            else if (*(parsed_instruction_iterator+1) != Parser::CommandType::Constant && *(parsed_instruction_iterator+1) == Parser::CommandType::Temp) {
-                output.append(label_name(*(parsed_instruction_iterator+1), source_code_file_name, tokens));
-                output.append("A=A+D\n");
-                output.append("D=M\n");
-            }
-
-            output.append("@SP\n");
-            output.append("A=M\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M+1\n");
-            break;
-        case Parser::CommandType::Pop:
-            output.append("@" + tokens[2] + "\n");
-            output.append("D=A\n");
-            output.append(label_name(*(parsed_instruction_iterator+1), source_code_file_name, tokens));
-            if (*(parsed_instruction_iterator+1) != Parser::CommandType::Temp)
-                output.append("D=D+M\n");
-            else
-                output.append("D=D+A\n");
-            output.append("@R13\n");
-            output.append("M=D\n");
-            output.append("@SP\n");
-            output.append("M=M-1\n");
-            output.append("@SP\n");
-            output.append("A=M\n");
+        if (parsed_instruction[1] != Parser::CommandType::Constant && parsed_instruction[1] != Parser::CommandType::Temp) {
+            output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
+            output.append("A=M+D\n");
             output.append("D=M\n");
-            output.append("@R13\n");
-            output.append("A=M\n");
-            output.append("M=D\n");
-            break;
-        case Parser::CommandType::Constant:
-        case Parser::CommandType::Local:
-        case Parser::CommandType::Static:
-        case Parser::CommandType::This:
-        case Parser::CommandType::That:
-        case Parser::CommandType::Argument:
-        case Parser::CommandType::Temp:
-        default:
-            break;
         }
-        parsed_instruction_iterator++;
+        else if (parsed_instruction[1] != Parser::CommandType::Constant && parsed_instruction[1] == Parser::CommandType::Temp) {
+            output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
+            output.append("A=A+D\n");
+            output.append("D=M\n");
+        }
+
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M+1\n");
+        break;
+    case Parser::CommandType::Pop:
+        output.append("@" + tokens[2] + "\n");
+        output.append("D=A\n");
+        output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
+        if (parsed_instruction[1] != Parser::CommandType::Temp)
+            output.append("D=D+M\n");
+        else
+            output.append("D=D+A\n");
+        output.append("@R13\n");
+        output.append("M=D\n");
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@R13\n");
+        output.append("A=M\n");
+        output.append("M=D\n");
+        break;
+    case Parser::CommandType::Constant:
+    case Parser::CommandType::Local:
+    case Parser::CommandType::Static:
+    case Parser::CommandType::This:
+    case Parser::CommandType::That:
+    case Parser::CommandType::Argument:
+    case Parser::CommandType::Temp:
+    default:
+        break;
     }
 
     return output; 
