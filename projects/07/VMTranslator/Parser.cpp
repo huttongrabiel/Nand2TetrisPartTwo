@@ -4,9 +4,6 @@
 
 #include <Parser.h>
 
-// Not liking this at all, will see how it works. Is this better than 
-// a bunch of if - else if statements? Sure is an eyesore that can't be
-// hidden away in a class...
 std::map<std::string, Parser::CommandType> Parser::command_enum_map  = {
             {"add",      Parser::CommandType::Add},
             {"sub",      Parser::CommandType::Subtract},
