@@ -29,7 +29,8 @@ public:
         This,
         That,
         Argument,
-        Temp
+        Temp,
+        Pointer
     };
 
     static std::vector<CommandType> parse(std::vector<std::string> const&);

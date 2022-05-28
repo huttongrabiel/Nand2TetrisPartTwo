@@ -102,14 +102,21 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("@" + tokens[2] + "\n");
         output.append("D=A\n");
 
-        if (parsed_instruction[1] != Parser::CommandType::Constant && parsed_instruction[1] != Parser::CommandType::Temp) {
-            output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
-            output.append("A=M+D\n");
-            output.append("D=M\n");
-        }
-        else if (parsed_instruction[1] != Parser::CommandType::Constant && parsed_instruction[1] == Parser::CommandType::Temp) {
+        if (parsed_instruction[1] == Parser::CommandType::Temp) {
             output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
             output.append("A=A+D\n");
+            output.append("D=M\n");
+        }
+        else if (parsed_instruction[1] == Parser::CommandType::Pointer) {
+            if (!to_int(tokens[2]))
+                output.append("@THIS\n");
+            else
+                output.append("@THAT\n");
+            output.append("D=M\n");
+        }
+        else if (parsed_instruction[1] != Parser::CommandType::Constant) {
+            output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
+            output.append("A=M+D\n");
             output.append("D=M\n");
         }
 
@@ -123,10 +130,14 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("@" + tokens[2] + "\n");
         output.append("D=A\n");
         output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
-        if (parsed_instruction[1] != Parser::CommandType::Temp)
-            output.append("D=D+M\n");
-        else
+
+        if (parsed_instruction[1] == Parser::CommandType::Temp)
             output.append("D=D+A\n");
+        else if (parsed_instruction[1] == Parser::CommandType::Pointer)
+            output.append("D=A\n");
+        else
+            output.append("D=D+M\n");
+
         output.append("@R13\n");
         output.append("M=D\n");
         output.append("@SP\n");
@@ -243,9 +254,9 @@ std::string Codegen::label_name(Parser::CommandType const& command_type, std::st
         output.append("@LCL\n");
     else if (command_type == Parser::CommandType::Static)
         output.append("@" + parse_file_name(source_code_file_name) + "." + tokens[2] + "\n");
-    else if (command_type == Parser::CommandType::This) 
+    else if (command_type == Parser::CommandType::This || (command_type == Parser::CommandType::Pointer && !to_int(tokens[2])))
         output.append("@THIS\n");
-    else if (command_type == Parser::CommandType::That)
+    else if (command_type == Parser::CommandType::That || (command_type == Parser::CommandType::Pointer && to_int(tokens[2])))
         output.append("@THAT\n");
     else if (command_type == Parser::CommandType::Argument)
         output.append("@ARG\n");
