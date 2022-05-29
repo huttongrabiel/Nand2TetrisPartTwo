@@ -64,11 +64,8 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
             output.append("D=M\n");
         }
 
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M+1\n");
+        output.append(push_d_asm_gen());
+
         break;
     case Parser::CommandType::Pop:
         output.append("@" + tokens[2] + "\n");
@@ -84,11 +81,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
 
         output.append("@R13\n");
         output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
+        output.append(pop_d_asm_gen());
         output.append("@R13\n");
         output.append("A=M\n");
         output.append("M=D\n");
@@ -97,11 +90,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("@" + tokens[1] + "\n");
         output.append("0; JMP\n");
     case Parser::CommandType::IfGoto:
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
+        output.append(pop_d_asm_gen());
         output.append("@" + tokens[1] + "\n");
         output.append("D; JNE\n");
         break;
@@ -125,20 +114,12 @@ std::string Codegen::artithmetic_asm_gen(Arithmetic arithmetic)
 {
     std::string output;
 
-    output.append("@SP\n");
-    output.append("M=M-1\n");
-    output.append("@SP\n");
-    output.append("A=M\n");
-    output.append("D=M\n");
-
+    output.append(pop_d_asm_gen());
+   
     if (arithmetic != Arithmetic::Negate) {
         output.append("@R13\n");
         output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
+        output.append(pop_d_asm_gen());
         output.append("@R13\n");
     }
 
@@ -154,11 +135,7 @@ std::string Codegen::artithmetic_asm_gen(Arithmetic arithmetic)
         break;
     }
 
-    output.append("@SP\n");
-    output.append("A=M\n");
-    output.append("M=D\n");
-    output.append("@SP\n");
-    output.append("M=M+1\n");
+    output.append(push_d_asm_gen());
 
     return output;
 }
@@ -167,18 +144,13 @@ std::string Codegen::comparison_operator_asm_gen(ComparisonOperator comparison_o
 {
     std::string output;
 
-    output.append("@SP\n");
-    output.append("M=M-1\n");
-    output.append("@SP\n");
-    output.append("A=M\n");
-    output.append("D=M\n");
+    output.append(pop_d_asm_gen());
+    
     output.append("@R13\n");
     output.append("M=D\n");
-    output.append("@SP\n");
-    output.append("M=M-1\n");
-    output.append("@SP\n");
-    output.append("A=M\n");
-    output.append("D=M\n");
+
+    output.append(pop_d_asm_gen());
+    
     output.append("@R13\n");
     output.append("D=D-M\n");
     output.append("@true" + std::to_string(m_continue_counter) + "\n");
@@ -201,11 +173,8 @@ std::string Codegen::comparison_operator_asm_gen(ComparisonOperator comparison_o
     output.append("(true" + std::to_string(m_continue_counter) + ")\n");
     output.append("    D=-1\n");
     output.append("(continue" + std::to_string(m_continue_counter) + ")\n");
-    output.append("@SP\n");
-    output.append("A=M\n");
-    output.append("M=D\n");
-    output.append("@SP\n");
-    output.append("M=M+1\n");
+
+    output.append(push_d_asm_gen());
 
     return output;
 }
@@ -214,20 +183,12 @@ std::string Codegen::bitwise_operator_asm_gen(BitwiseOperator BitwiseOperator)
 {
     std::string output;
 
-    output.append("@SP\n");
-    output.append("M=M-1\n");
-    output.append("@SP\n");
-    output.append("A=M\n");
-    output.append("D=M\n");
+    output.append(pop_d_asm_gen());
 
     if (BitwiseOperator != BitwiseOperator::Not) {
         output.append("@R13\n");
         output.append("M=D\n");
-        output.append("@SP\n");
-        output.append("M=M-1\n");
-        output.append("@SP\n");
-        output.append("A=M\n");
-        output.append("D=M\n");
+        output.append(pop_d_asm_gen());
         output.append("@R13\n");
     }
 
@@ -243,11 +204,33 @@ std::string Codegen::bitwise_operator_asm_gen(BitwiseOperator BitwiseOperator)
         break;
     }
 
+    output.append(push_d_asm_gen());
+
+    return output;
+}
+
+std::string Codegen::push_d_asm_gen()
+{
+    std::string output;
+
     output.append("@SP\n");
     output.append("A=M\n");
     output.append("M=D\n");
     output.append("@SP\n");
     output.append("M=M+1\n");
+
+    return output;
+}
+
+std::string Codegen::pop_d_asm_gen()
+{
+    std::string output;
+
+    output.append("@SP\n");
+    output.append("M=M-1\n");
+    output.append("@SP\n");
+    output.append("A=M\n");
+    output.append("D=M\n");
 
     return output;
 }
