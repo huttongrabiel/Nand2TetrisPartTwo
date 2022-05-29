@@ -93,6 +93,20 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("A=M\n");
         output.append("M=D\n");
         break;
+    case Parser::CommandType::Goto:
+        output.append("@" + tokens[1] + "\n");
+        output.append("0; JMP\n");
+    case Parser::CommandType::IfGoto:
+        output.append("@SP\n");
+        output.append("M=M-1\n");
+        output.append("@SP\n");
+        output.append("A=M\n");
+        output.append("D=M\n");
+        output.append("@" + tokens[1] + "\n");
+        output.append("D; JNE\n");
+        break;
+    case Parser::CommandType::Label:
+        output.append("(" + tokens[1] + ")\n");
     case Parser::CommandType::Constant:
     case Parser::CommandType::Local:
     case Parser::CommandType::Static:

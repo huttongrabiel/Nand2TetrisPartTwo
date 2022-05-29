@@ -23,7 +23,10 @@ std::map<std::string, Parser::CommandType> Parser::command_enum_map  = {
             {"that",     Parser::CommandType::That},
             {"argument", Parser::CommandType::Argument},
             {"temp",     Parser::CommandType::Temp},
-            {"pointer",     Parser::CommandType::Pointer}
+            {"pointer",     Parser::CommandType::Pointer},
+            {"goto",     Parser::CommandType::Goto},
+            {"if-goto",     Parser::CommandType::IfGoto},
+            {"label",     Parser::CommandType::Label}
 };
 
 std::vector<Parser::CommandType> Parser::parse(std::vector<std::string> const& tokens)

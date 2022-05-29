@@ -30,7 +30,10 @@ public:
         That,
         Argument,
         Temp,
-        Pointer
+        Pointer,
+        Goto,
+        IfGoto,
+        Label
     };
 
     static std::vector<CommandType> parse(std::vector<std::string> const&);
