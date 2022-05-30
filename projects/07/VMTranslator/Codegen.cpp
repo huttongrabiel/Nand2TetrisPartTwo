@@ -51,6 +51,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
     case Parser::CommandType::Goto:
         output.append("@" + tokens[1] + "\n");
         output.append("0; JMP\n");
+        break;
     case Parser::CommandType::IfGoto:
         output.append(pop_d_asm_gen());
         output.append("@" + tokens[1] + "\n");
@@ -58,6 +59,135 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         break;
     case Parser::CommandType::Label:
         output.append("(" + tokens[1] + ")\n");
+        break;
+    case Parser::CommandType::Function:
+        output.append("@" + tokens[2] + "\n");
+        output.append("D=A\n");
+        output.append("@count" + std::to_string(unique_identifier) + "\n");
+        output.append("M=D\n");
+        output.append("(" + tokens[1] + ")\n");
+        output.append("@count" + std::to_string(unique_identifier) + "\n");
+        output.append("D=M\n");
+        output.append("@CONTINUE" + std::to_string(unique_identifier) + "\n");
+        output.append("D; JEQ\n");
+        output.append(generate_push_assembly(Parser::CommandType::Constant, "0", source_code_file_name));
+        output.append("@count" + std::to_string(unique_identifier) + "\n");
+        output.append("M=M-1\n");
+        output.append("@" + tokens[1] + "\n");
+        output.append("0;JMP\n");
+        output.append("(CONTINUE" + std::to_string(unique_identifier) + ")\n");
+        break;
+    case Parser::CommandType::Call:
+        // push return address
+        output.append("@" + std::to_string(unique_identifier) + "\n");
+        output.append("D=A\n");
+        output.append(push_d_asm_gen());
+
+        //  push state onto stack
+        output.append("@LCL\n");
+        output.append("D=M\n");
+        output.append(push_d_asm_gen());
+        output.append("@ARG\n");
+        output.append("D=M\n");
+        output.append(push_d_asm_gen());
+        output.append("@THIS\n");
+        output.append("D=M\n");
+        output.append(push_d_asm_gen());
+        output.append("@THAT\n");
+        output.append("D=M\n");
+        output.append(push_d_asm_gen());
+
+        // reposition LCL
+        output.append("@SP\n");
+        output.append("D=M\n");
+        output.append("@LCL\n");
+        output.append("A=D\n");
+
+        // reposition ARG
+        output.append("@5\n");
+        output.append("D=A\n");
+        output.append("@" + tokens[2] + "\n");
+        output.append("D=D+A\n");
+        output.append("@SP\n");
+        output.append("D=M-D\n");
+        output.append("@ARG\n");
+        output.append("M=D\n");
+
+        // goto function
+        output.append("@" + tokens[1] + "\n");
+        output.append("0; JMP\n");
+
+        // return address
+        output.append("(functionCall" + std::to_string(unique_identifier) + ")\n");
+
+        break;
+    case Parser::CommandType::Return:
+        // set endframe
+        output.append("@LCL\n");
+        output.append("D=M\n");
+        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("M=D\n");
+
+        // set return address
+        output.append("@5\n");
+        output.append("D=A\n");
+        output.append("@endframe\n");
+        output.append("D=M-D\n");
+        output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+        output.append("M=D\n");
+
+        // put return value in argument 0
+        output.append(generate_pop_assembly(Parser::CommandType::Argument, "0", source_code_file_name));
+
+        // set SP to ARG + 1
+        output.append("@ARG\n");
+        output.append("D=M\n");
+        output.append("@SP\n");
+        output.append("M=D+1\n");
+
+        // set THAT to endframe-1
+        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("D=M\n");
+        output.append("D=D-1\n");
+        output.append("A=D\n");
+        output.append("D=M\n");
+        output.append("@THAT\n");
+        output.append("M=D\n");
+        
+        // set THIS to endframe-2
+        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("D=M\n");
+        output.append("@2\n");
+        output.append("D=D-A\n");
+        output.append("A=D\n");
+        output.append("D=M\n");
+        output.append("@THIS\n");
+        output.append("M=D\n");
+
+        // set ARG to endframe-3
+        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("D=M\n");
+        output.append("@3\n");
+        output.append("D=D-A\n");
+        output.append("A=D\n");
+        output.append("D=M\n");
+        output.append("@ARG\n");
+        output.append("M=D\n");
+
+        // set LCL to endframe-4
+        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("D=M\n");
+        output.append("@4\n");
+        output.append("D=D-A\n");
+        output.append("A=D\n");
+        output.append("D=M\n");
+        output.append("@LCL\n");
+        output.append("M=D\n");
+
+        // goto returnAddress
+        //output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+        //output.append("0;JMP\n");
+        break;
     case Parser::CommandType::Constant:
     case Parser::CommandType::Local:
     case Parser::CommandType::Static:
