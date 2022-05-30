@@ -33,7 +33,10 @@ public:
         Pointer,
         Goto,
         IfGoto,
-        Label
+        Label,
+        Function,
+        Call,
+        Return
     };
 
     static std::vector<CommandType> parse(std::vector<std::string> const&);
