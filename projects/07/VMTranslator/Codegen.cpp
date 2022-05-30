@@ -43,10 +43,10 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append(bitwise_operator_asm_gen(BitwiseOperator::Not));
         break;
     case Parser::CommandType::Push:
-        output.append(generate_push_assembly(parsed_instruction[1], tokens, source_code_file_name)); 
+        output.append(generate_push_assembly(parsed_instruction[1], tokens[2], source_code_file_name)); 
         break;
     case Parser::CommandType::Pop:
-        output.append(generate_pop_assembly(parsed_instruction[1], tokens, source_code_file_name)); 
+        output.append(generate_pop_assembly(parsed_instruction[1], tokens[2], source_code_file_name)); 
         break;
     case Parser::CommandType::Goto:
         output.append("@" + tokens[1] + "\n");
@@ -72,27 +72,27 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
     return output; 
 }
 
-std::string Codegen::generate_push_assembly(Parser::CommandType const& next_instruction, std::vector<std::string> const& tokens, std::string const& source_code_file_name)
+std::string Codegen::generate_push_assembly(Parser::CommandType const& next_instruction, std::string const& offset_token, std::string const& source_code_file_name)
 { 
     std::string output;
 
-    output.append("@" + tokens[2] + "\n");
+    output.append("@" + offset_token + "\n");
     output.append("D=A\n");
 
     if (next_instruction == Parser::CommandType::Temp) {
-        output.append(label_name(next_instruction, source_code_file_name, tokens));
+        output.append(label_name(next_instruction, source_code_file_name, offset_token));
         output.append("A=A+D\n");
         output.append("D=M\n");
     }
     else if (next_instruction == Parser::CommandType::Pointer) {
-        if (!to_int(tokens[2]))
+        if (!to_int(offset_token))
             output.append("@THIS\n");
         else
             output.append("@THAT\n");
         output.append("D=M\n");
     }
     else if (next_instruction != Parser::CommandType::Constant) {
-        output.append(label_name(next_instruction, source_code_file_name, tokens));
+        output.append(label_name(next_instruction, source_code_file_name, offset_token));
         output.append("A=M+D\n");
         output.append("D=M\n");
     }
@@ -102,13 +102,13 @@ std::string Codegen::generate_push_assembly(Parser::CommandType const& next_inst
     return output;
 }
 
-std::string Codegen::generate_pop_assembly(Parser::CommandType const& next_instruction, std::vector<std::string> const& tokens, std::string const& source_code_file_name)
+std::string Codegen::generate_pop_assembly(Parser::CommandType const& next_instruction, std::string const& offset_token, std::string const& source_code_file_name)
 { 
     std::string output;
 
-    output.append("@" + tokens[2] + "\n");
+    output.append("@" + offset_token + "\n");
     output.append("D=A\n");
-    output.append(label_name(next_instruction, source_code_file_name, tokens));
+    output.append(label_name(next_instruction, source_code_file_name, offset_token));
 
     if (next_instruction == Parser::CommandType::Temp)
         output.append("D=D+A\n");
@@ -252,17 +252,32 @@ std::string Codegen::pop_d_asm_gen()
     return output;
 }
 
-std::string Codegen::label_name(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::vector<std::string> const& tokens)
+// Only generates the start of the loop. The rest must be provided by the caller.
+std::string Codegen::generate_loop_assembly(std::string const loop_count)
+{
+    std::string output;
+
+    output.append("@" + loop_count + "\n");
+    output.append("D=A\n");
+
+    std::string loop_label = "LOOP" + std::to_string(unique_label_identifier);
+
+    output.append("(" + loop_label + ")\n");
+
+    return output;    
+}
+
+std::string Codegen::label_name(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::string const& offset_token)
 {
     std::string output;
 
     if (command_type == Parser::CommandType::Local) 
         output.append("@LCL\n");
     else if (command_type == Parser::CommandType::Static)
-        output.append("@" + parse_file_name(source_code_file_name) + "." + tokens[2] + "\n");
-    else if (command_type == Parser::CommandType::This || (command_type == Parser::CommandType::Pointer && !to_int(tokens[2])))
+        output.append("@" + parse_file_name(source_code_file_name) + "." + offset_token + "\n");
+    else if (command_type == Parser::CommandType::This || (command_type == Parser::CommandType::Pointer && !to_int(offset_token)))
         output.append("@THIS\n");
-    else if (command_type == Parser::CommandType::That || (command_type == Parser::CommandType::Pointer && to_int(tokens[2])))
+    else if (command_type == Parser::CommandType::That || (command_type == Parser::CommandType::Pointer && to_int(offset_token)))
         output.append("@THAT\n");
     else if (command_type == Parser::CommandType::Argument)
         output.append("@ARG\n");
