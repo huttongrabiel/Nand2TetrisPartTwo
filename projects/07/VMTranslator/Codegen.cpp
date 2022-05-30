@@ -46,23 +46,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append(generate_push_assembly(parsed_instruction[1], tokens, source_code_file_name)); 
         break;
     case Parser::CommandType::Pop:
-        output.append("@" + tokens[2] + "\n");
-        output.append("D=A\n");
-        output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
-
-        if (parsed_instruction[1] == Parser::CommandType::Temp)
-            output.append("D=D+A\n");
-        else if (parsed_instruction[1] == Parser::CommandType::Pointer)
-            output.append("D=A\n");
-        else
-            output.append("D=D+M\n");
-
-        output.append("@R13\n");
-        output.append("M=D\n");
-        output.append(pop_d_asm_gen());
-        output.append("@R13\n");
-        output.append("A=M\n");
-        output.append("M=D\n");
+        output.append(generate_pop_assembly(parsed_instruction[1], tokens, source_code_file_name)); 
         break;
     case Parser::CommandType::Goto:
         output.append("@" + tokens[1] + "\n");
@@ -114,6 +98,31 @@ std::string Codegen::generate_push_assembly(Parser::CommandType const& next_inst
     }
 
     output.append(push_d_asm_gen());
+
+    return output;
+}
+
+std::string Codegen::generate_pop_assembly(Parser::CommandType const& next_instruction, std::vector<std::string> const& tokens, std::string const& source_code_file_name)
+{ 
+    std::string output;
+
+    output.append("@" + tokens[2] + "\n");
+    output.append("D=A\n");
+    output.append(label_name(next_instruction, source_code_file_name, tokens));
+
+    if (next_instruction == Parser::CommandType::Temp)
+        output.append("D=D+A\n");
+    else if (next_instruction == Parser::CommandType::Pointer)
+        output.append("D=A\n");
+    else
+        output.append("D=D+M\n");
+
+    output.append("@R13\n");
+    output.append("M=D\n");
+    output.append(pop_d_asm_gen());
+    output.append("@R13\n");
+    output.append("A=M\n");
+    output.append("M=D\n");
 
     return output;
 }
