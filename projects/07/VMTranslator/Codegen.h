@@ -12,7 +12,7 @@
 class Codegen {
 public:
     static std::string generate_hack_asm(std::vector<Parser::CommandType> const&, std::vector<std::string> const&, std::string const&, std::string const&);
-    static int m_continue_counter;
+    static int unique_identifier;
 private:
     enum class Arithmetic {
         Add,

@@ -31,7 +31,7 @@ void output_hack_asm(char const* file_name) {
 
         std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, static_cast<std::string>(file_name));
 
-        Codegen::m_continue_counter++;
+        Codegen::unique_identifier++;
 
         output_file << output;
     }

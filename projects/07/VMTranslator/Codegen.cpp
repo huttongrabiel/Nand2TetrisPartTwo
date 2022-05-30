@@ -4,7 +4,7 @@
 
 #include <Codegen.h>
 
-int Codegen::m_continue_counter;
+int Codegen::unique_identifier;
 
 std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& parsed_instruction, std::vector<std::string> const& tokens, std::string const& instruction, std::string const& source_code_file_name)
 {
@@ -12,7 +12,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
 
     output.append("// Instruction: " + instruction + "\n");
 
-    m_continue_counter++;
+    unique_identifier++;
 
     switch(parsed_instruction[0]) {
     case Parser::CommandType::Add:
@@ -170,7 +170,7 @@ std::string Codegen::comparison_operator_asm_gen(ComparisonOperator comparison_o
     
     output.append("@R13\n");
     output.append("D=D-M\n");
-    output.append("@true" + std::to_string(m_continue_counter) + "\n");
+    output.append("@true" + std::to_string(unique_identifier) + "\n");
 
     switch (comparison_operator) {
     case ComparisonOperator::EqualTo:
@@ -185,11 +185,11 @@ std::string Codegen::comparison_operator_asm_gen(ComparisonOperator comparison_o
     }
 
     output.append("D=0\n");
-    output.append("@continue" + std::to_string(m_continue_counter) + "\n");
+    output.append("@continue" + std::to_string(unique_identifier) + "\n");
     output.append("0; JMP\n");
-    output.append("(true" + std::to_string(m_continue_counter) + ")\n");
+    output.append("(true" + std::to_string(unique_identifier) + ")\n");
     output.append("    D=-1\n");
-    output.append("(continue" + std::to_string(m_continue_counter) + ")\n");
+    output.append("(continue" + std::to_string(unique_identifier) + ")\n");
 
     output.append(push_d_asm_gen());
 
@@ -260,7 +260,7 @@ std::string Codegen::generate_loop_assembly(std::string const loop_count)
     output.append("@" + loop_count + "\n");
     output.append("D=A\n");
 
-    std::string loop_label = "LOOP" + std::to_string(unique_label_identifier);
+    std::string loop_label = "LOOP" + std::to_string(unique_identifier);
 
     output.append("(" + loop_label + ")\n");
 
