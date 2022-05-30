@@ -17,7 +17,7 @@ std::vector<std::string> Lexer::lex(std::string line)
         if (line[i] != ' ' && i != line.length() && !(is_new_line(line[i])))
             string_builder.push_back(line[i]);
 
-        if (line[i] == ' ' || line[i] == '\n' || i == line.length()) {
+        if (line[i] == ' ' || line[i] == '\n' || i == line.length() || line[i] == '\r') {
             tokens.push_back(string_builder);
             string_builder.clear();
         }
