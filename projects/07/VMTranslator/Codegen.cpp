@@ -43,29 +43,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append(bitwise_operator_asm_gen(BitwiseOperator::Not));
         break;
     case Parser::CommandType::Push:
-        output.append("@" + tokens[2] + "\n");
-        output.append("D=A\n");
-
-        if (parsed_instruction[1] == Parser::CommandType::Temp) {
-            output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
-            output.append("A=A+D\n");
-            output.append("D=M\n");
-        }
-        else if (parsed_instruction[1] == Parser::CommandType::Pointer) {
-            if (!to_int(tokens[2]))
-                output.append("@THIS\n");
-            else
-                output.append("@THAT\n");
-            output.append("D=M\n");
-        }
-        else if (parsed_instruction[1] != Parser::CommandType::Constant) {
-            output.append(label_name(parsed_instruction[1], source_code_file_name, tokens));
-            output.append("A=M+D\n");
-            output.append("D=M\n");
-        }
-
-        output.append(push_d_asm_gen());
-
+        output.append(generate_push_assembly(parsed_instruction[1], tokens, source_code_file_name)); 
         break;
     case Parser::CommandType::Pop:
         output.append("@" + tokens[2] + "\n");
@@ -108,6 +86,36 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
     }
 
     return output; 
+}
+
+std::string Codegen::generate_push_assembly(Parser::CommandType const& next_instruction, std::vector<std::string> const& tokens, std::string const& source_code_file_name)
+{ 
+    std::string output;
+
+    output.append("@" + tokens[2] + "\n");
+    output.append("D=A\n");
+
+    if (next_instruction == Parser::CommandType::Temp) {
+        output.append(label_name(next_instruction, source_code_file_name, tokens));
+        output.append("A=A+D\n");
+        output.append("D=M\n");
+    }
+    else if (next_instruction == Parser::CommandType::Pointer) {
+        if (!to_int(tokens[2]))
+            output.append("@THIS\n");
+        else
+            output.append("@THAT\n");
+        output.append("D=M\n");
+    }
+    else if (next_instruction != Parser::CommandType::Constant) {
+        output.append(label_name(next_instruction, source_code_file_name, tokens));
+        output.append("A=M+D\n");
+        output.append("D=M\n");
+    }
+
+    output.append(push_d_asm_gen());
+
+    return output;
 }
 
 std::string Codegen::artithmetic_asm_gen(Arithmetic arithmetic)

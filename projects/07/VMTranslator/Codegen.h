@@ -31,7 +31,8 @@ private:
         Or,
         Not
     };
-
+    
+    static std::string generate_push_assembly(Parser::CommandType const&, std::vector<std::string> const&, std::string const&);
     static std::string artithmetic_asm_gen(Arithmetic);
     static std::string comparison_operator_asm_gen(ComparisonOperator);
     static std::string bitwise_operator_asm_gen(BitwiseOperator);
