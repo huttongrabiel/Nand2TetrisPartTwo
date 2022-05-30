@@ -39,7 +39,6 @@ private:
     static std::string bitwise_operator_asm_gen(BitwiseOperator);
     static std::string push_d_asm_gen();
     static std::string pop_d_asm_gen();
-    static std::string generate_loop_assembly(std::string const); 
     static std::string label_name(Parser::CommandType const&, std::string const&, std::string const&);
     static std::string parse_file_name(std::string const&);
 

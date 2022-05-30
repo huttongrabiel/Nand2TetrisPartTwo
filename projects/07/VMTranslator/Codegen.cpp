@@ -252,21 +252,6 @@ std::string Codegen::pop_d_asm_gen()
     return output;
 }
 
-// Only generates the start of the loop. The rest must be provided by the caller.
-std::string Codegen::generate_loop_assembly(std::string const loop_count)
-{
-    std::string output;
-
-    output.append("@" + loop_count + "\n");
-    output.append("D=A\n");
-
-    std::string loop_label = "LOOP" + std::to_string(unique_identifier);
-
-    output.append("(" + loop_label + ")\n");
-
-    return output;    
-}
-
 std::string Codegen::label_name(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::string const& offset_token)
 {
     std::string output;
