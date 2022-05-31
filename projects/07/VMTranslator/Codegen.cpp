@@ -79,7 +79,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         break;
     case Parser::CommandType::Call:
         // push return address
-        output.append("@" + std::to_string(unique_identifier) + "\n");
+        output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
         output.append("D=A\n");
         output.append(push_d_asm_gen());
 
@@ -101,7 +101,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("@SP\n");
         output.append("D=M\n");
         output.append("@LCL\n");
-        output.append("A=D\n");
+        output.append("M=D\n");
 
         // reposition ARG
         output.append("@5\n");
@@ -118,7 +118,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("0; JMP\n");
 
         // return address
-        output.append("(functionCall" + std::to_string(unique_identifier) + ")\n");
+        output.append("(returnAddress" + std::to_string(unique_identifier) + ")\n");
 
         break;
     case Parser::CommandType::Return:
@@ -131,7 +131,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         // set return address
         output.append("@5\n");
         output.append("D=A\n");
-        output.append("@endframe\n");
+        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
         output.append("D=M-D\n");
         output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
         output.append("M=D\n");
@@ -185,8 +185,10 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
 
         // goto returnAddress
-        //output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
-        //output.append("0;JMP\n");
+        output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+        output.append("A=M\n");
+        output.append("0;JMP\n");
+
         break;
     case Parser::CommandType::Constant:
     case Parser::CommandType::Local:
@@ -391,25 +393,8 @@ std::string Codegen::sys_init()
     output.append("@SP\n");
     output.append("M=D\n");
 
-    output.append("@300\n");
-    output.append("D=A\n");
-    output.append("@LCL\n");
-    output.append("M=D\n");
-
-    output.append("@400\n");
-    output.append("D=A\n");
-    output.append("@ARG\n");
-    output.append("M=D\n");
-
-    output.append("@3000\n");
-    output.append("D=A\n");
-    output.append("@THIS\n");
-    output.append("M=D\n");
-
-    output.append("@3010\n");
-    output.append("D=A\n");
-    output.append("@THAT\n");
-    output.append("M=D\n");
+    output.append("@Sys.init\n");
+    output.append("0; JMP\n");
 
     return output;
 }
