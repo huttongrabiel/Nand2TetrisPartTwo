@@ -382,6 +382,38 @@ std::string Codegen::pop_d_asm_gen()
     return output;
 }
 
+std::string Codegen::sys_init()
+{
+    std::string output;
+
+    output.append("@256\n");
+    output.append("D=A\n");
+    output.append("@SP\n");
+    output.append("M=D\n");
+
+    output.append("@300\n");
+    output.append("D=A\n");
+    output.append("@LCL\n");
+    output.append("M=D\n");
+
+    output.append("@400\n");
+    output.append("D=A\n");
+    output.append("@ARG\n");
+    output.append("M=D\n");
+
+    output.append("@3000\n");
+    output.append("D=A\n");
+    output.append("@THIS\n");
+    output.append("M=D\n");
+
+    output.append("@3010\n");
+    output.append("D=A\n");
+    output.append("@THAT\n");
+    output.append("M=D\n");
+
+    return output;
+}
+
 std::string Codegen::label_name(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::string const& offset_token)
 {
     std::string output;
