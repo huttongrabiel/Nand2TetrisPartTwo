@@ -53,6 +53,8 @@ void output_hack_asm(char const* path) {
 
     std::ofstream output_file(out_file_name);
 
+    output_file << Codegen::sys_init();
+
     for (auto const& file : file_paths) {
         std::cout << file << std::endl;
         std::ifstream input_source_code(file);
