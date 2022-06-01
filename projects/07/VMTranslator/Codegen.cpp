@@ -61,17 +61,18 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("(" + tokens[1] + ")\n");
         break;
     case Parser::CommandType::Function:
+        output.append("(" + tokens[1] + "FUNCTION_ENTRY)\n");
         output.append("@" + tokens[2] + "\n");
         output.append("D=A\n");
-        output.append("@count" + std::to_string(unique_identifier) + "\n");
+        output.append("@count\n");
         output.append("M=D\n");
         output.append("(" + tokens[1] + ")\n");
-        output.append("@count" + std::to_string(unique_identifier) + "\n");
+        output.append("@count\n");
         output.append("D=M\n");
         output.append("@CONTINUE" + std::to_string(unique_identifier) + "\n");
         output.append("D; JEQ\n");
         output.append(generate_push_assembly(Parser::CommandType::Constant, "0", source_code_file_name));
-        output.append("@count" + std::to_string(unique_identifier) + "\n");
+        output.append("@count\n");
         output.append("M=M-1\n");
         output.append("@" + tokens[1] + "\n");
         output.append("0;JMP\n");
@@ -114,7 +115,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
 
         // goto function
-        output.append("@" + tokens[1] + "\n");
+        output.append("@" + tokens[1] + "FUNCTION_ENTRY\n");
         output.append("0; JMP\n");
 
         // return address
@@ -125,14 +126,16 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         // set endframe
         output.append("@LCL\n");
         output.append("D=M\n");
-        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("@endframe\n");
         output.append("M=D\n");
 
         // set return address
         output.append("@5\n");
         output.append("D=A\n");
-        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("@endframe\n");
         output.append("D=M-D\n");
+        output.append("A=D\n");
+        output.append("D=M\n");
         output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
         output.append("M=D\n");
 
@@ -146,7 +149,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D+1\n");
 
         // set THAT to endframe-1
-        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("@endframe\n");
         output.append("D=M\n");
         output.append("D=D-1\n");
         output.append("A=D\n");
@@ -155,7 +158,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
         
         // set THIS to endframe-2
-        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("@endframe\n");
         output.append("D=M\n");
         output.append("@2\n");
         output.append("D=D-A\n");
@@ -165,7 +168,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
 
         // set ARG to endframe-3
-        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("@endframe\n");
         output.append("D=M\n");
         output.append("@3\n");
         output.append("D=D-A\n");
@@ -175,7 +178,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
 
         // set LCL to endframe-4
-        output.append("@endframe" + std::to_string(unique_identifier) + "\n");
+        output.append("@endframe\n");
         output.append("D=M\n");
         output.append("@4\n");
         output.append("D=D-A\n");
@@ -393,7 +396,7 @@ std::string Codegen::sys_init()
     output.append("@SP\n");
     output.append("M=D\n");
 
-    output.append("@Sys.init\n");
+    output.append("@Sys.initFUNCTION_ENTRY\n");
     output.append("0; JMP\n");
 
     return output;
