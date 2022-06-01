@@ -91,13 +91,19 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("@ARG\n");
         output.append("M=D\n");
 
-        // goto function
+        // reposition LCL
+        output.append("@SP\n");
+        output.append("D=M\n");
+        output.append("@LCL\n");
+        output.append("M=D\n");
+
+       // goto function
         output.append("@" + tokens[1] + "FUNCTION_ENTRY\n");
         output.append("0; JMP\n");
 
         // return address
         output.append("(returnAddress" + std::to_string(unique_identifier) + ")\n");
-
+        
         break;
     case Parser::CommandType::Return:
         // set endframe
