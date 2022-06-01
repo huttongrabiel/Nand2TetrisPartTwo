@@ -79,30 +79,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("(CONTINUE" + std::to_string(unique_identifier) + ")\n");
         break;
     case Parser::CommandType::Call:
-        // push return address
-        output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
-        output.append("D=A\n");
-        output.append(push_d_asm_gen());
-
-        //  push state onto stack
-        output.append("@LCL\n");
-        output.append("D=M\n");
-        output.append(push_d_asm_gen());
-        output.append("@ARG\n");
-        output.append("D=M\n");
-        output.append(push_d_asm_gen());
-        output.append("@THIS\n");
-        output.append("D=M\n");
-        output.append(push_d_asm_gen());
-        output.append("@THAT\n");
-        output.append("D=M\n");
-        output.append(push_d_asm_gen());
-
-        // reposition LCL
-        output.append("@SP\n");
-        output.append("D=M\n");
-        output.append("@LCL\n");
-        output.append("M=D\n");
+        output.append(push_state());
 
         // reposition ARG
         output.append("@5\n");
@@ -387,6 +364,32 @@ std::string Codegen::pop_d_asm_gen()
     return output;
 }
 
+std::string Codegen::push_state()
+{
+    std::string output;
+
+    // push return address
+    output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+    output.append("D=A\n");
+    output.append(push_d_asm_gen());
+
+    // push LCL, ARG, THIS, THAT
+    output.append("@LCL\n");
+    output.append("D=M\n");
+    output.append(push_d_asm_gen());
+    output.append("@ARG\n");
+    output.append("D=M\n");
+    output.append(push_d_asm_gen());
+    output.append("@THIS\n");
+    output.append("D=M\n");
+    output.append(push_d_asm_gen());
+    output.append("@THAT\n");
+    output.append("D=M\n");
+    output.append(push_d_asm_gen());
+
+    return output;
+}
+
 std::string Codegen::sys_init()
 {
     std::string output;
@@ -395,6 +398,8 @@ std::string Codegen::sys_init()
     output.append("D=A\n");
     output.append("@SP\n");
     output.append("M=D\n");
+
+    output.append(push_state());
 
     output.append("@Sys.initFUNCTION_ENTRY\n");
     output.append("0; JMP\n");
