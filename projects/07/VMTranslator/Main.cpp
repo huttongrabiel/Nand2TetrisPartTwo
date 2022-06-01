@@ -32,10 +32,10 @@ void output_hack_asm(char const* path) {
     }
 
     std::string out_file_name;
+    std::string path_name;
     if (is_directory) {
         // FIXME: Put this in a function
         // FIXME: Find a more specific name for path_name
-        std::string path_name;
         size_t start_index = path_as_string.length()-1;
         if (path_as_string[start_index] == '/')
             start_index--;
@@ -75,7 +75,7 @@ void output_hack_asm(char const* path) {
         
             std::vector<Parser::CommandType> parsed_instruction = Parser::parse(tokens);
 
-            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, static_cast<std::string>(path));
+            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, path_name);
 
             Codegen::unique_identifier++;
 
