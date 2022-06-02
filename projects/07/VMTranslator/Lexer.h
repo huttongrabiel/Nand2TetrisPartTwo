@@ -12,6 +12,7 @@ class Lexer {
 public:
     static std::vector<std::string> lex(std::string);
     static bool is_lexable_line(std::string);
+    static std::string trim_path(std::string);
 private:
     static bool is_new_line(char); 
 };
