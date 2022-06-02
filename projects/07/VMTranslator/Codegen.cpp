@@ -228,7 +228,7 @@ std::string Codegen::generate_pop_assembly(Parser::CommandType const& next_instr
     output.append("D=A\n");
     output.append(label_name(next_instruction, source_code_file_name, offset_token));
 
-    if (next_instruction == Parser::CommandType::Temp)
+    if (next_instruction == Parser::CommandType::Temp || next_instruction == Parser::CommandType::Static)
         output.append("D=D+A\n");
     else if (next_instruction == Parser::CommandType::Pointer)
         output.append("D=A\n");
