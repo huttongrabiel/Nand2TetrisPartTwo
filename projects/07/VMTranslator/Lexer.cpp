@@ -54,3 +54,19 @@ bool Lexer::is_new_line(char ch)
 
     return false;
 }
+
+std::string Lexer::trim_path(std::string path)
+{
+    size_t end_index = path.length()-1;
+
+    size_t substr_start_index = 0;
+
+    for (size_t i = end_index; i >= 0; i--) {
+        if (path[i] == '/') {
+            substr_start_index = i+1;
+            break;
+        }
+    }
+
+    return path.substr(substr_start_index, path.length()-substr_start_index-3);
+}
