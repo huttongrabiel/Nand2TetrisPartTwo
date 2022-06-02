@@ -81,21 +81,9 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
     case Parser::CommandType::Call:
         output.append(push_state(false));
 
-        // reposition ARG
-        output.append("@5\n");
-        output.append("D=A\n");
-        output.append("@" + tokens[2] + "\n");
-        output.append("D=D+A\n");
-        output.append("@SP\n");
-        output.append("D=M-D\n");
-        output.append("@ARG\n");
-        output.append("M=D\n");
+        output.append(reposition_ARG(tokens[2]));
 
-        // reposition LCL
-        output.append("@SP\n");
-        output.append("D=M\n");
-        output.append("@LCL\n");
-        output.append("M=D\n");
+        output.append(reposition_LCL());
 
        // goto function
         output.append("@" + tokens[1] + "FUNCTION_ENTRY\n");
@@ -400,6 +388,34 @@ std::string Codegen::push_state(bool is_sys_init)
     return output;
 }
 
+std::string Codegen::reposition_ARG(std::string n_local_variables)
+{
+    std::string output;
+    
+    output.append("@5\n");
+    output.append("D=A\n");
+    output.append("@" + n_local_variables + "\n");
+    output.append("D=D+A\n");
+    output.append("@SP\n");
+    output.append("D=M-D\n");
+    output.append("@ARG\n");
+    output.append("M=D\n");
+
+    return output;
+}
+
+std::string Codegen::reposition_LCL()
+{
+    std::string output;
+
+    output.append("@SP\n");
+    output.append("D=M\n");
+    output.append("@LCL\n");
+    output.append("M=D\n");
+
+    return output;
+}
+
 std::string Codegen::sys_init()
 {
     std::string output;
@@ -410,6 +426,10 @@ std::string Codegen::sys_init()
     output.append("M=D\n");
 
     output.append(push_state(true));
+
+    output.append(reposition_ARG("0"));
+
+    output.append(reposition_LCL());
 
     output.append("@Sys.initFUNCTION_ENTRY\n");
     output.append("0; JMP\n");
