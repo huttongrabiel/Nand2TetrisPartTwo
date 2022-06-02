@@ -107,7 +107,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("D=M-D\n");
         output.append("A=D\n");
         output.append("D=M\n");
-        output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+        output.append("@8\n");
         output.append("M=D\n");
 
         // put return value in argument 0
@@ -159,7 +159,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
 
         // goto returnAddress
-        output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+        output.append("@8\n");
         output.append("A=M\n");
         output.append("0;JMP\n");
 
@@ -182,10 +182,14 @@ std::string Codegen::generate_push_assembly(Parser::CommandType const& next_inst
 { 
     std::string output;
 
-    output.append("@" + offset_token + "\n");
+    if (next_instruction != Parser::CommandType::Static)
+        output.append("@" + offset_token + "\n");
+    else
+        output.append("@0\n");
+
     output.append("D=A\n");
 
-    if (next_instruction == Parser::CommandType::Temp) {
+    if (next_instruction == Parser::CommandType::Temp || next_instruction == Parser::CommandType::Static) {
         output.append(label_name(next_instruction, source_code_file_name, offset_token));
         output.append("A=A+D\n");
         output.append("D=M\n");
@@ -212,11 +216,15 @@ std::string Codegen::generate_pop_assembly(Parser::CommandType const& next_instr
 { 
     std::string output;
 
-    output.append("@" + offset_token + "\n");
+    if (next_instruction != Parser::CommandType::Static)
+        output.append("@" + offset_token + "\n");
+    else
+        output.append("@0\n");
+
     output.append("D=A\n");
     output.append(label_name(next_instruction, source_code_file_name, offset_token));
 
-    if (next_instruction == Parser::CommandType::Temp)
+    if (next_instruction == Parser::CommandType::Temp || next_instruction == Parser::CommandType::Static)
         output.append("D=D+A\n");
     else if (next_instruction == Parser::CommandType::Pointer)
         output.append("D=A\n");
@@ -427,6 +435,7 @@ std::string Codegen::sys_init()
 
     output.append(push_state(true));
 
+    // No local variables when we call Sys.init
     output.append(reposition_ARG("0"));
 
     output.append(reposition_LCL());
