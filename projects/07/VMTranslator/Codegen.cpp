@@ -94,16 +94,16 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         
         break;
     case Parser::CommandType::Return:
-        // set endframe
+        // set endframe at 7
         output.append("@LCL\n");
         output.append("D=M\n");
-        output.append("@endframe\n");
+        output.append("@7\n");
         output.append("M=D\n");
 
         // set return address
         output.append("@5\n");
         output.append("D=A\n");
-        output.append("@endframe\n");
+        output.append("@7\n");
         output.append("D=M-D\n");
         output.append("A=D\n");
         output.append("D=M\n");
@@ -120,7 +120,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D+1\n");
 
         // set THAT to endframe-1
-        output.append("@endframe\n");
+        output.append("@7\n");
         output.append("D=M\n");
         output.append("D=D-1\n");
         output.append("A=D\n");
@@ -129,7 +129,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
         
         // set THIS to endframe-2
-        output.append("@endframe\n");
+        output.append("@7\n");
         output.append("D=M\n");
         output.append("@2\n");
         output.append("D=D-A\n");
@@ -139,7 +139,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
 
         // set ARG to endframe-3
-        output.append("@endframe\n");
+        output.append("@7\n");
         output.append("D=M\n");
         output.append("@3\n");
         output.append("D=D-A\n");
@@ -149,7 +149,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("M=D\n");
 
         // set LCL to endframe-4
-        output.append("@endframe\n");
+        output.append("@7\n");
         output.append("D=M\n");
         output.append("@4\n");
         output.append("D=D-A\n");
