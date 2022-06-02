@@ -64,15 +64,15 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("(" + tokens[1] + "FUNCTION_ENTRY)\n");
         output.append("@" + tokens[2] + "\n");
         output.append("D=A\n");
-        output.append("@count\n");
+        output.append("@R15\n");
         output.append("M=D\n");
         output.append("(" + tokens[1] + ")\n");
-        output.append("@count\n");
+        output.append("@R15\n");
         output.append("D=M\n");
         output.append("@CONTINUE" + std::to_string(unique_identifier) + "\n");
         output.append("D; JEQ\n");
         output.append(generate_push_assembly(Parser::CommandType::Constant, "0", source_code_file_name));
-        output.append("@count\n");
+        output.append("@R15\n");
         output.append("M=M-1\n");
         output.append("@" + tokens[1] + "\n");
         output.append("0;JMP\n");
