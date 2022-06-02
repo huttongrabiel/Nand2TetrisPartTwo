@@ -79,7 +79,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("(CONTINUE" + std::to_string(unique_identifier) + ")\n");
         break;
     case Parser::CommandType::Call:
-        output.append(push_state());
+        output.append(push_state(false));
 
         // reposition ARG
         output.append("@5\n");
@@ -370,12 +370,16 @@ std::string Codegen::pop_d_asm_gen()
     return output;
 }
 
-std::string Codegen::push_state()
+std::string Codegen::push_state(bool is_sys_init)
 {
     std::string output;
 
     // push return address
-    output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+    if (is_sys_init) 
+        output.append("@16\n");
+    else
+        output.append("@returnAddress" + std::to_string(unique_identifier) + "\n");
+
     output.append("D=A\n");
     output.append(push_d_asm_gen());
 
@@ -405,7 +409,7 @@ std::string Codegen::sys_init()
     output.append("@SP\n");
     output.append("M=D\n");
 
-    output.append(push_state());
+    output.append(push_state(true));
 
     output.append("@Sys.initFUNCTION_ENTRY\n");
     output.append("0; JMP\n");
