@@ -76,7 +76,7 @@ void output_hack_asm(char const* path) {
         
             std::vector<Parser::CommandType> parsed_instruction = Parser::parse(tokens);
 
-            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, path_name);
+            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, trimmed_path_name);
 
             Codegen::unique_identifier++;
 
