@@ -190,7 +190,7 @@ std::string Codegen::generate_push_assembly(Parser::CommandType const& next_inst
     output.append("D=A\n");
 
     if (next_instruction == Parser::CommandType::Temp || next_instruction == Parser::CommandType::Static) {
-        output.append(label_name(next_instruction, source_code_file_name, offset_token));
+        output.append(generate_memory_segment_label(next_instruction, source_code_file_name, offset_token));
         output.append("A=A+D\n");
         output.append("D=M\n");
     }
@@ -202,7 +202,7 @@ std::string Codegen::generate_push_assembly(Parser::CommandType const& next_inst
         output.append("D=M\n");
     }
     else if (next_instruction != Parser::CommandType::Constant) {
-        output.append(label_name(next_instruction, source_code_file_name, offset_token));
+        output.append(generate_memory_segment_label(next_instruction, source_code_file_name, offset_token));
         output.append("A=M+D\n");
         output.append("D=M\n");
     }
@@ -222,7 +222,7 @@ std::string Codegen::generate_pop_assembly(Parser::CommandType const& next_instr
         output.append("@0\n");
 
     output.append("D=A\n");
-    output.append(label_name(next_instruction, source_code_file_name, offset_token));
+    output.append(generate_memory_segment_label(next_instruction, source_code_file_name, offset_token));
 
     if (next_instruction == Parser::CommandType::Temp || next_instruction == Parser::CommandType::Static)
         output.append("D=D+A\n");
@@ -446,7 +446,7 @@ std::string Codegen::sys_init()
     return output;
 }
 
-std::string Codegen::label_name(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::string const& offset_token)
+std::string Codegen::generate_memory_segment_label(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::string const& offset_token)
 {
     std::string output;
 

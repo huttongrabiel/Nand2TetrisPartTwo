@@ -44,7 +44,7 @@ private:
     static std::string push_state(bool);
     static std::string reposition_ARG(std::string local_variables);
     static std::string reposition_LCL();
-    static std::string label_name(Parser::CommandType const&, std::string const&, std::string const&);
+    static std::string generate_memory_segment_label(Parser::CommandType const&, std::string const&, std::string const&);
 
     static int to_int(std::string str) 
     {
