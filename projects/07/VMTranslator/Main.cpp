@@ -20,6 +20,12 @@ void output_hack_asm(char const* path) {
 
     if (!std::filesystem::is_regular_file(path) && std::filesystem::exists(path)) {
         is_directory = true;
+
+        if (path_as_string[path_as_string.length()-1] != '/') {
+            std::cerr << "\033[01;31mError: \033[0mPlease end your directory with a '/'" << std::endl;
+            exit(1);
+        }
+
         for (auto const& file : std::filesystem::directory_iterator(path)) {
             std::string file_path_as_string = file.path().string();
             if (file_path_as_string.substr(file_path_as_string.length()-3, 3) == ".vm")
