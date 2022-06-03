@@ -55,18 +55,24 @@ bool Lexer::is_new_line(char ch)
     return false;
 }
 
-std::string Lexer::trim_path(std::string path)
+std::string Lexer::trim_path(std::string path, PathType PathType)
 {
-    size_t end_index = path.length()-1;
+    size_t path_length = path.length()-1;
 
+    size_t length_modifier = 0;
     size_t substr_start_index = 0;
 
-    for (size_t i = end_index; i >= 0; i--) {
-        if (path[i] == '/') {
+    for (size_t i = path_length; i >= 0; i--) {
+        if (path[i] == '/' && i != path_length) {
             substr_start_index = i+1;
             break;
         }
+        if (path[i] == '/' && i == path_length) 
+            length_modifier = 1;
     }
 
-    return path.substr(substr_start_index, path.length()-substr_start_index-3);
+    if (PathType == PathType::Directory)
+        return path.substr(substr_start_index, path.length()-substr_start_index-length_modifier);
+    else
+        return path.substr(0, path.length()-3);
 }

@@ -32,24 +32,16 @@ void output_hack_asm(char const* path) {
     }
 
     std::string out_file_name;
-    std::string path_name;
-    if (is_directory) {
-        // FIXME: Put this in a function
-        // FIXME: Find a more specific name for path_name
-        size_t start_index = path_as_string.length()-1;
-        if (path_as_string[start_index] == '/')
-            start_index--;
-            
-        for (size_t i = start_index; i >= 0; i--) {
-            if (path_as_string[i] == '/')
-                break;
-            path_name.insert(0, 1, path_as_string[i]);
-        }
+    std::string trimmed_path;
 
-        out_file_name = path_as_string + path_name + ".asm";
+    if (is_directory) {
+        trimmed_path = Lexer::trim_path(path_as_string, Lexer::PathType::Directory);
+        out_file_name = path_as_string + trimmed_path + ".asm";
     }
-    else if (is_file)
-        out_file_name = path_as_string.substr(0, path_as_string.length()-3) + ".asm";
+    else if (is_file) {
+        trimmed_path = Lexer::trim_path(path_as_string, Lexer::PathType::File);
+        out_file_name = trimmed_path + ".asm";
+    }
 
     std::ofstream output_file(out_file_name);
 
@@ -59,8 +51,6 @@ void output_hack_asm(char const* path) {
         std::ifstream input_source_code(file);
         input_source_code.clear();
         input_source_code.seekg(0);
-
-        auto trimmed_path_name = Lexer::trim_path(file);
 
         if (!input_source_code.is_open()) {
             std::cerr << "\033[01;31mError: \033[0mFile '" + file + "' not found!! Check your paths!" << std::endl;
@@ -76,7 +66,7 @@ void output_hack_asm(char const* path) {
         
             std::vector<Parser::CommandType> parsed_instruction = Parser::parse(tokens);
 
-            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, trimmed_path_name);
+            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, trimmed_path);
 
             Codegen::unique_identifier++;
 
