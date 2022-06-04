@@ -55,7 +55,7 @@ bool Lexer::is_new_line(char ch)
     return false;
 }
 
-std::string Lexer::trim_path(std::string path, PathType PathType)
+std::string Lexer::trim_path(std::string path, PathType PathType, bool full_trim)
 {
     size_t path_length = path.length()-1;
 
@@ -73,6 +73,8 @@ std::string Lexer::trim_path(std::string path, PathType PathType)
 
     if (PathType == PathType::Directory)
         return path.substr(substr_start_index, path.length()-substr_start_index-length_modifier);
+    else if (PathType == PathType::File && full_trim)
+        return path.substr(substr_start_index, path.length()-substr_start_index-length_modifier-3);
     else
         return path.substr(0, path.length()-3);
 }

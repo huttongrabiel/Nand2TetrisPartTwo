@@ -67,10 +67,12 @@ void output_hack_asm(char const* path) {
 
             if (!Lexer::is_lexable_line(instruction))
                 continue;
+
+            auto trimmed_file_name = Lexer::trim_path(file, Lexer::PathType::File, true);
         
             std::vector<Parser::CommandType> parsed_instruction = Parser::parse(tokens);
 
-            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, trimmed_path);
+            std::string output = Codegen::generate_hack_asm(parsed_instruction, tokens, instruction, trimmed_file_name);
 
             Codegen::unique_identifier++;
 
