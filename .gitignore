@@ -21,3 +21,5 @@ demo
 .vscode
 Build/
 build/
+compile_commands.json
+.cache
