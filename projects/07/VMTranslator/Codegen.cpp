@@ -446,6 +446,17 @@ std::string Codegen::sys_init()
     return output;
 }
 
+std::string Codegen::infinite_loop()
+{
+    std::string output;
+
+    output.append("(end)\n");
+    output.append("@end\n");
+    output.append("0; JMP\n");
+
+    return output;
+}
+
 std::string Codegen::generate_memory_segment_label(Parser::CommandType const& command_type, std::string const& source_code_file_name, std::string const& offset_token)
 {
     std::string output;

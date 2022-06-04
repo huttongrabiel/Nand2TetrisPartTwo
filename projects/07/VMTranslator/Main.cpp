@@ -82,12 +82,7 @@ void output_hack_asm(char const* path) {
         input_source_code.close();
     }
 
-    std::string infinite_termination;
-    infinite_termination.append("(end)\n");
-    infinite_termination.append("@end\n");
-    infinite_termination.append("0; JMP\n");
-
-    output_file << infinite_termination;
+    output_file << Codegen::infinite_loop();
 
     output_file.close();
 }
@@ -96,7 +91,7 @@ int main(int argc, char* argv[]) {
     // Open file provided in CLI args, pass to output_hack_asm, close file
 
     if (argc < 2) {
-        std::cerr << "\033[01;31mError: \033[0mPlease provide source file." << std::endl;
+        std::cerr << "\033[01;31mError: \033[0mPlease provide source file or directory with .vm files inside." << std::endl;
         exit(1);
     }
 

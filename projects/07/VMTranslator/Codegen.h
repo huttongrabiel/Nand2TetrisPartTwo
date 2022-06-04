@@ -13,6 +13,7 @@ class Codegen {
 public:
     static std::string generate_hack_asm(std::vector<Parser::CommandType> const&, std::vector<std::string> const&, std::string const&, std::string const&);
     static std::string sys_init();
+    static std::string infinite_loop();
 
     static int unique_identifier;
 private:
