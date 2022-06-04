@@ -55,8 +55,6 @@ void output_hack_asm(char const* path) {
 
     for (auto file : file_paths) {
         std::ifstream input_source_code(file);
-        input_source_code.clear();
-        input_source_code.seekg(0);
 
         if (!input_source_code.is_open()) {
             std::cerr << "\033[01;31mError: \033[0mFile '" + file + "' not found!! Check your paths!" << std::endl;
