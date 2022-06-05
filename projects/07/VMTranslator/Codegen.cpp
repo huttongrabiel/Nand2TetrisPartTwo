@@ -79,7 +79,7 @@ std::string Codegen::generate_hack_asm(std::vector<Parser::CommandType> const& p
         output.append("(CONTINUE" + std::to_string(unique_identifier) + ")\n");
         break;
     case Parser::CommandType::Call:
-        output.append(push_state(false));
+        output.append(push_state());
 
         output.append(reposition_ARG(tokens[2]));
 
