@@ -1,0 +1,19 @@
+class Ball {
+    
+    field int ballRadius;
+
+    constructor Ball new(int radius) {
+        let ballRadius = radius;
+        return this;
+    }
+
+    method void drawBall() {
+        do Screen.drawCircle(240, ballRadius/2+5, 5);
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

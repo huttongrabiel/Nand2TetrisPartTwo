@@ -2,12 +2,24 @@ class Main {
     
     function void main() {
         var Paddle paddle;
+        var Ball ball;
+        var EventLoop eventLoop;
 
         // 100 is a decent sized paddle, maybe a touch too big
-        let paddle = Paddle.new(100);
+        let paddle = Paddle.new(-1, 100);
 
         do paddle.drawPaddle();
         do paddle.dispose();
+
+        let ball = Ball.new(8);
+        
+        do ball.drawBall();
+        do ball.dispose();
+
+        let eventLoop = EventLoop.new(paddle, ball);
+
+        do eventLoop.runGame();
+        do eventLoop.dispose();
 
         return;
     }

@@ -1,0 +1,47 @@
+class EventLoop {
+    field Paddle paddle;
+    field Ball ball;
+
+    constructor EventLoop new(Paddle p, Ball b) {
+        let paddle = p;
+        let ball = b;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    // run the game here
+    method void runGame() {
+        var bool exit;
+        var int keyPress;
+
+        let exit = false;
+        let keyPress = 0;
+
+        while (~(exit)) {
+
+            while (keyPress = 0) {
+                let keyPress = Keyboard.keyPressed();
+            }
+            
+            if (keyPress = 81)  { let exit = true; } // Shift+Q
+            do Sys.wait(2);
+
+            while (~(keyPress = 0)) {
+                let keyPress = Keyboard.keyPressed();
+                do movePaddle(keyPress);
+                return;
+            }
+        }
+        return;
+    }
+
+    method void movePaddle(bool keyPress) {
+        if (keyPress = 130) { do paddle.movePaddleLeft(); }
+        if (keyPress = 132) { do paddle.movePaddleRight(); }
+        return;
+    }
+}

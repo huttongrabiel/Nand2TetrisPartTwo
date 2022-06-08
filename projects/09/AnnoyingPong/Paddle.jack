@@ -1,9 +1,11 @@
 class Paddle {
+    field int leftX;
     field int length;
     
     // Construct paddle
-    constructor Paddle new(int x) {
-        let length = x;
+    constructor Paddle new(int x1, int length1) {
+        let leftX = x1;
+        let length = length1;
         return this;
     }
 
@@ -15,13 +17,45 @@ class Paddle {
     // screen is 256 rows of 512 pixels
     // Paddle has a fixed height but its length can vary
     method void drawPaddle() {
-    
         var int middle;
         let middle = 512 / 2;
 
         do Screen.setColor(true);
-        do Screen.drawRectangle(middle-(length/2), 253, middle+(length/2), 255);
+        if (leftX = -1) {
+            do Screen.drawRectangle(middle-(length/2), 253, middle+(length/2), 255);
+        }
+        else {
+            do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
+        }
 
+        return;
+    }
+    
+    // Draw white over current rectangle
+    method void erasePaddle() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
+        do Screen.setColor(true);
+        return;
+    }
+
+    // FIXME: Illegal rectangle coordinates
+    method void movePaddleLeft() {
+        // move left two pixels at a time
+        if (leftX-2 > 0) {
+            let leftX = leftX-2;
+            do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
+        }
+        return;
+    }
+
+    // FIXME: Illegal rectangle coordinates
+    method void movePaddleRight() {
+        // move left two pixels at a time
+        if (leftX+2 < 512-length-20) {
+            let leftX = leftX+2;
+            do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
+        }
         return;
     }
 }
