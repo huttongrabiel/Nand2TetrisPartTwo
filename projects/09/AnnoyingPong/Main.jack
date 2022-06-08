@@ -1,0 +1,15 @@
+class Main {
+    
+    function void main() {
+        var Paddle paddle;
+
+        // 100 is a decent sized paddle, maybe a touch too big
+        let paddle = Paddle.new(100);
+
+        do paddle.drawPaddle();
+        do paddle.dispose();
+
+        return;
+    }
+
+}

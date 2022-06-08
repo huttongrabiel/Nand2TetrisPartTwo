@@ -1,0 +1,27 @@
+class Paddle {
+    field int length;
+    
+    // Construct paddle
+    constructor Paddle new(int x) {
+        let length = x;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    // screen is 256 rows of 512 pixels
+    // Paddle has a fixed height but its length can vary
+    method void drawPaddle() {
+    
+        var int middle;
+        let middle = 512 / 2;
+
+        do Screen.setColor(true);
+        do Screen.drawRectangle(middle-(length/2), 253, middle+(length/2), 255);
+
+        return;
+    }
+}
