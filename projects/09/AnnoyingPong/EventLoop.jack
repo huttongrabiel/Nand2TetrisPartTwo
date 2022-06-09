@@ -13,10 +13,10 @@ class EventLoop {
         return;
     }
 
-    // run the game here
     method void runGame() {
         var bool exit;
         var char keyPress;
+        var char previousKey;
 
         let exit = false;
 
@@ -24,21 +24,24 @@ class EventLoop {
 
             while (keyPress = 0) {
                 let keyPress = Keyboard.keyPressed();
-                do movePaddle(keyPress);
             }
             
             if (keyPress = 81)  { let exit = true; } // Shift+Q
+            
+            let previousKey = keyPress;
 
             while (~(keyPress = 0)) {
                 let keyPress = Keyboard.keyPressed();
-                do movePaddle(keyPress);
-                do Sys.wait(5);
+                if (~(keyPress = previousKey)) {
+                    do movePaddle(keyPress);
+                }
+                do Sys.wait(4);
             }
         }
         return;
     }
 
-    method void movePaddle(int keyPress) {
+    method void movePaddle(char keyPress) {
         if (keyPress = 130) { do paddle.movePaddleLeft(); }
         if (keyPress = 132) { do paddle.movePaddleRight(); }
         return;
