@@ -22,8 +22,11 @@ class EventLoop {
 
         while (~(exit)) {
 
+            do moveBall();
+
             while (keyPress = 0) {
                 let keyPress = Keyboard.keyPressed();
+                do moveBall();
             }
             
             if (keyPress = 81)  { let exit = true; } // Shift+Q
@@ -35,6 +38,7 @@ class EventLoop {
                 if (~(keyPress = previousKey)) {
                     do movePaddle(keyPress);
                 }
+                do moveBall();
                 do Sys.wait(4);
             }
         }
@@ -44,6 +48,19 @@ class EventLoop {
     method void movePaddle(char keyPress) {
         if (keyPress = 130) { do paddle.movePaddleLeft(); }
         if (keyPress = 132) { do paddle.movePaddleRight(); }
+        return;
+    }
+
+    method void moveBall() {
+        var int direction;
+        let direction = Physics.ballCollision(paddle, ball);
+
+        if (direction = -1) {
+            do ball.moveBallDown();
+        }
+        else {
+            do ball.moveBallUp();
+        }
         return;
     }
 }

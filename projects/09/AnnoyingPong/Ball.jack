@@ -1,15 +1,17 @@
 class Ball {
     
-    field int ballRadius;
+    field int ballRadius, ballCenterX, ballCenterY;
 
-    constructor Ball new(int radius) {
+    constructor Ball new(int cenX, int cenY, int radius) {
+        let ballCenterX = cenX;
+        let ballCenterY = cenY;
         let ballRadius = radius;
         return this;
     }
 
     method void drawBall() {
         do Screen.setColor(true);
-        do Screen.drawCircle(240, ballRadius/2+5, 5);
+        do Screen.drawCircle(ballCenterX, ballCenterY, ballRadius);
         do Screen.setColor(false);
         return;
     }
@@ -18,4 +20,31 @@ class Ball {
         do Memory.deAlloc(this);
         return;
     }
+
+    method int getCenterY() { return ballCenterY; }
+
+    method int getRadius() { return ballRadius; }
+
+    method void eraseBall() {
+        do Screen.setColor(false);
+        do Screen.drawCircle(ballCenterX, ballCenterY, ballRadius);
+        do Screen.setColor(true);
+        return;
+    }
+
+    method void moveBallDown() {
+        do eraseBall();
+        do Screen.setColor(true);
+        do Screen.drawCircle((ballCenterX + ballRadius + 2), (ballRadius + ballCenterY) + 2, ballRadius);
+        do Screen.setColor(false);
+        return;
+    }
+
+    method void moveBallUp() {
+        do eraseBall();
+        do Screen.setColor(true);
+        do Screen.drawCircle((ballCenterX + ballRadius) - 2, (ballRadius + ballCenterY) - 2, ballRadius);
+        do Screen.setColor(false);
+        return;
+   }
 }

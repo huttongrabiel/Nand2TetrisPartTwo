@@ -9,13 +9,16 @@ class Main {
         let paddle = Paddle.new(-1, 50);
         do paddle.drawPaddle();
 
-        let ball = Ball.new(8);
+        let ball = Ball.new(200, 10, 5);
         do ball.drawBall();
 
         let eventLoop = EventLoop.new(paddle, ball);
 
         do eventLoop.runGame();
+
         do eventLoop.dispose();
+        do ball.dispose();
+        do paddle.dispose();
 
         return;
     }

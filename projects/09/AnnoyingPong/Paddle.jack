@@ -44,7 +44,6 @@ class Paddle {
     }
     
     method void movePaddleLeft() {
-        do Screen.setColor(true);
         if ((leftX-(length/2)) > 1) {
             let leftX = leftX-2;
             do Screen.setColor(true);
