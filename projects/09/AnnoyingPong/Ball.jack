@@ -8,7 +8,9 @@ class Ball {
     }
 
     method void drawBall() {
+        do Screen.setColor(true);
         do Screen.drawCircle(240, ballRadius/2+5, 5);
+        do Screen.setColor(false);
         return;
     }
 

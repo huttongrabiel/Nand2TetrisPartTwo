@@ -21,12 +21,16 @@ class Paddle {
         let middle = 512 / 2;
 
         do Screen.setColor(true);
+
         if (leftX = -1) {
-            do Screen.drawRectangle(middle-(length/2), 253, middle+(length/2), 255);
+            let leftX = middle;
+            do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
         }
         else {
             do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
         }
+
+        do Screen.setColor(false);
 
         return;
     }
@@ -38,23 +42,27 @@ class Paddle {
         do Screen.setColor(true);
         return;
     }
-
-    // FIXME: Illegal rectangle coordinates
+    
     method void movePaddleLeft() {
-        // move left two pixels at a time
-        if (leftX-2 > 0) {
+        do Screen.setColor(true);
+        if ((leftX-(length/2)) > 1) {
             let leftX = leftX-2;
+            do Screen.setColor(true);
             do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
+            do Screen.setColor(false);
+            do Screen.drawRectangle((leftX+(length/2)), 253, (leftX+(length/2))+2, 255);
         }
         return;
     }
 
-    // FIXME: Illegal rectangle coordinates
     method void movePaddleRight() {
-        // move left two pixels at a time
-        if (leftX+2 < 512-length-20) {
+        var int rightX;
+        if ((leftX+(length/2)) < 510) {
             let leftX = leftX+2;
+            do Screen.setColor(true);
             do Screen.drawRectangle(leftX-(length/2), 253, leftX+(length/2), 255);
+            do Screen.setColor(false);
+            do Screen.drawRectangle((leftX-(length/2))-2, 253, (leftX-(length/2)), 255);
         }
         return;
     }
