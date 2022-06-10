@@ -34,16 +34,18 @@ class Ball {
 
     method void moveBallDown() {
         do eraseBall();
+        let ballCenterY = ballCenterY + 2;
         do Screen.setColor(true);
-        do Screen.drawCircle((ballCenterX + ballRadius + 2), (ballRadius + ballCenterY) + 2, ballRadius);
+        do Screen.drawCircle(ballCenterX, ballCenterY, ballRadius);
         do Screen.setColor(false);
         return;
     }
 
     method void moveBallUp() {
         do eraseBall();
+        let ballCenterY = ballCenterY - 2;
         do Screen.setColor(true);
-        do Screen.drawCircle((ballCenterX + ballRadius) - 2, (ballRadius + ballCenterY) - 2, ballRadius);
+        do Screen.drawCircle(ballCenterX, ballCenterY, ballRadius);
         do Screen.setColor(false);
         return;
    }

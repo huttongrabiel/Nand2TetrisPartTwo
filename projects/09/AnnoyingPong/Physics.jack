@@ -1,34 +1,37 @@
 class Physics {
     
-    function int ballCollision(Paddle paddle, Ball ball) {
+    field int direction; 
+
+    constructor Physics new(int d) {
+        let direction = d;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int ballCollision(Ball ball) {
         // Start with just top and bottom collision, add side collisions later
 
         // collision if yCenter + radius >= 253 (bottom collision)
         // collision if yCenter - radius >= 0 (top collision)
         
         // -1 is down and 1 is up
-        var int direction;
         var int ballCenterY;
         var int ballRadius;
 
-        // start by moving the ball down becuase it spawns at the top
-        let direction = -1; 
         let ballCenterY = ball.getCenterY();
         let ballRadius = ball.getRadius();
 
         // bottom collision
-        if ((ballCenterY + ballRadius) > 253) {
+        if ((ballCenterY + ballRadius) > 250 & (direction = -1)) {
             let direction = 1; 
         }
-        if ((ballCenterY + ballRadius) = 253) {
-            let direction = 1;
-        }
-
+ 
         // top collision
-        if ((ballCenterY - ballRadius) > 0) {
-            let direction = -1;
-        }
-        if ((ballCenterY - ballRadius) = 0) {
+        if ((ballCenterY - ballRadius) < 1 & (direction = 1)) {
             let direction = -1;
         }
 

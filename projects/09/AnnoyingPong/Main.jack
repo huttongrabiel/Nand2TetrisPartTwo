@@ -3,16 +3,20 @@ class Main {
     function void main() {
         var Paddle paddle;
         var Ball ball;
+        var Physics physics;
         var EventLoop eventLoop;
     
         // -1 Sets paddle to middle of screen
         let paddle = Paddle.new(-1, 50);
         do paddle.drawPaddle();
 
-        let ball = Ball.new(200, 10, 5);
+        let ball = Ball.new(200, 12, 4);
         do ball.drawBall();
+    
+        // This needs to be an object in order to persist direction
+        let physics = Physics.new(-1);
 
-        let eventLoop = EventLoop.new(paddle, ball);
+        let eventLoop = EventLoop.new(paddle, ball, physics);
 
         do eventLoop.runGame();
 

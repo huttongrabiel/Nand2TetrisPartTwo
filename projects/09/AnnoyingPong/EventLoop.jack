@@ -1,10 +1,12 @@
 class EventLoop {
     field Paddle paddle;
     field Ball ball;
+    field Physics physics;
 
-    constructor EventLoop new(Paddle p, Ball b) {
+    constructor EventLoop new(Paddle p, Ball b, Physics phys) {
         let paddle = p;
         let ball = b;
+        let physics = phys;
         return this;
     }
 
@@ -23,10 +25,12 @@ class EventLoop {
         while (~(exit)) {
 
             do moveBall();
+            do Sys.wait(4);
 
             while (keyPress = 0) {
                 let keyPress = Keyboard.keyPressed();
                 do moveBall();
+                do Sys.wait(4);
             }
             
             if (keyPress = 81)  { let exit = true; } // Shift+Q
@@ -34,11 +38,11 @@ class EventLoop {
             let previousKey = keyPress;
 
             while (~(keyPress = 0)) {
+                do moveBall();
                 let keyPress = Keyboard.keyPressed();
                 if (~(keyPress = previousKey)) {
                     do movePaddle(keyPress);
                 }
-                do moveBall();
                 do Sys.wait(4);
             }
         }
@@ -53,12 +57,12 @@ class EventLoop {
 
     method void moveBall() {
         var int direction;
-        let direction = Physics.ballCollision(paddle, ball);
+        let direction = physics.ballCollision(ball);
 
         if (direction = -1) {
             do ball.moveBallDown();
         }
-        else {
+        if (direction = 1) {
             do ball.moveBallUp();
         }
         return;
